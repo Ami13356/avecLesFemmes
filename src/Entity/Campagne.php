@@ -9,6 +9,12 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CampagneRepository::class)]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap([
+    'campagne' => Campagne::class,
+    'epargne' => Epargne::class,
+    'tontine' => Tontine::class,
+    'pret' => Pret::class,
+])]
 class Campagne
 {
     #[ORM\Id]
