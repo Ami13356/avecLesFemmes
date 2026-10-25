@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CampagneRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -43,6 +45,17 @@ class Campagne
     #[ORM\ManyToOne(inversedBy: 'campagnes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Groupement $groupement = null;
+
+    /**
+     * @var Collection<int, ModeCotisation>
+     */
+    #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
+    private Collection $modeCotisations;
+
+    public function __construct()
+    {
+        $this->modeCotisations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -129,6 +142,35 @@ class Campagne
     public function setGroupement(?Groupement $groupement): static
     {
         $this->groupement = $groupement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModeCotisation>
+     */
+    public function getModeCotisations(): Collection
+    {
+        return $this->modeCotisations;
+    }
+
+    public function addModeCotisation(ModeCotisation $modeCotisation): static
+    {
+        if (!$this->modeCotisations->contains($modeCotisation)) {
+            $this->modeCotisations->add($modeCotisation);
+            $modeCotisation->setCampagne($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModeCotisation(ModeCotisation $modeCotisation): static
+    {
+        if ($this->modeCotisations->removeElement($modeCotisation)) {
+            if ($modeCotisation->getCampagne() === $this) {
+                $modeCotisation->setCampagne(null);
+            }
+        }
 
         return $this;
     }
