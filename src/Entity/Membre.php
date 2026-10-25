@@ -27,9 +27,16 @@ class Membre extends User
     #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'membre')]
     private Collection $modeCotisations;
 
+    /**
+     * @var Collection<int, DemandePret>
+     */
+    #[ORM\OneToMany(targetEntity: DemandePret::class, mappedBy: 'membre')]
+    private Collection $demandePrets;
+
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
+        $this->demandePrets = new ArrayCollection();
     }
 
     public function getMatricule(): ?string
@@ -91,6 +98,35 @@ class Membre extends User
         if ($this->modeCotisations->removeElement($modeCotisation)) {
             if ($modeCotisation->getMembre() === $this) {
                 $modeCotisation->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DemandePret>
+     */
+    public function getDemandePrets(): Collection
+    {
+        return $this->demandePrets;
+    }
+
+    public function addDemandePret(DemandePret $demandePret): static
+    {
+        if (!$this->demandePrets->contains($demandePret)) {
+            $this->demandePrets->add($demandePret);
+            $demandePret->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandePret(DemandePret $demandePret): static
+    {
+        if ($this->demandePrets->removeElement($demandePret)) {
+            if ($demandePret->getMembre() === $this) {
+                $demandePret->setMembre(null);
             }
         }
 
