@@ -24,9 +24,16 @@ class Groupement
     #[ORM\OneToMany(targetEntity: Membre::class, mappedBy: 'groupement')]
     private Collection $membres;
 
+    /**
+     * @var Collection<int, Admin>
+     */
+    #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'groupement')]
+    private Collection $admins;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
+        $this->admins = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,6 +76,36 @@ class Groupement
         if ($this->membres->removeElement($membre)) {
             if ($membre->getGroupement() === $this) {
                 $membre->setGroupement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Admin>
+     */
+    public function getAdmins(): Collection
+    {
+        return $this->admins;
+    }
+
+    public function addAdmin(Admin $admin): static
+    {
+        if (!$this->admins->contains($admin)) {
+            $this->admins->add($admin);
+            $admin->setGroupement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdmin(Admin $admin): static
+    {
+        if ($this->admins->removeElement($admin)) {
+            // set the owning side to null (unless already changed)
+            if ($admin->getGroupement() === $this) {
+                $admin->setGroupement(null);
             }
         }
 
