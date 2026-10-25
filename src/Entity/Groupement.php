@@ -30,10 +30,17 @@ class Groupement
     #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'groupement')]
     private Collection $admins;
 
+    /**
+     * @var Collection<int, Campagne>
+     */
+    #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'groupement')]
+    private Collection $campagnes;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
         $this->admins = new ArrayCollection();
+        $this->campagnes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,9 +110,37 @@ class Groupement
     public function removeAdmin(Admin $admin): static
     {
         if ($this->admins->removeElement($admin)) {
-            // set the owning side to null (unless already changed)
             if ($admin->getGroupement() === $this) {
                 $admin->setGroupement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Campagne>
+     */
+    public function getCampagnes(): Collection
+    {
+        return $this->campagnes;
+    }
+
+    public function addCampagne(Campagne $campagne): static
+    {
+        if (!$this->campagnes->contains($campagne)) {
+            $this->campagnes->add($campagne);
+            $campagne->setGroupement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCampagne(Campagne $campagne): static
+    {
+        if ($this->campagnes->removeElement($campagne)) {
+            if ($campagne->getGroupement() === $this) {
+                $campagne->setGroupement(null);
             }
         }
 
