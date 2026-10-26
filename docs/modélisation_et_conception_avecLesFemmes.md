@@ -1,6 +1,6 @@
 # Modélisation et conception : avecLesFemmes
 
-**Étudiante :** Aminata Cissé
+**Étudiante :** Aminata CISSE
 **Cours :** Symfony 7.4, Professeur Baila Wane
 **Base de données :** PostgreSQL (base `avecLesFemmes`)
 
