@@ -3,11 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\AmendeRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AmendeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Amende
 {
+    use DateTimeTrait;
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
