@@ -4,12 +4,14 @@ namespace App\Entity;
 
 use App\Enum\Periodicite;
 use App\Repository\CampagneRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampagneRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap([
@@ -20,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
 ])]
 class Campagne
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,30 +32,14 @@ class Campagne
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateDebut = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    private ?\DateTimeImmutable $dateDebut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $dateFin = null;
 
     #[ORM\Column]
     private ?float $montant = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $updatedAt = null;
-
-    #[ORM\ManyToOne(inversedBy: 'campagnes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Groupement $groupement = null;
-
-    /**
-     * @var Collection<int, ModeCotisation>
-     */
-    #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
-    private Collection $modeCotisations;
 
     #[ORM\Column(enumType: Periodicite::class)]
     private ?Periodicite $periodicite = null;
@@ -67,6 +55,16 @@ class Campagne
 
     #[ORM\Column]
     private ?float $amendeJournaliere = null;
+
+    #[ORM\ManyToOne(inversedBy: 'campagnes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Groupement $groupement = null;
+
+    /**
+     * @var Collection<int, ModeCotisation>
+     */
+    #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
+    private Collection $modeCotisations;
 
     public function __construct()
     {
@@ -90,12 +88,12 @@ class Campagne
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTime
+    public function getDateDebut(): ?\DateTimeImmutable
     {
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTime $dateDebut): static
+    public function setDateDebut(\DateTimeImmutable $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
 
@@ -122,71 +120,6 @@ class Campagne
     public function setMontant(float $montant): static
     {
         $this->montant = $montant;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTime $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getGroupement(): ?Groupement
-    {
-        return $this->groupement;
-    }
-
-    public function setGroupement(?Groupement $groupement): static
-    {
-        $this->groupement = $groupement;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ModeCotisation>
-     */
-    public function getModeCotisations(): Collection
-    {
-        return $this->modeCotisations;
-    }
-
-    public function addModeCotisation(ModeCotisation $modeCotisation): static
-    {
-        if (!$this->modeCotisations->contains($modeCotisation)) {
-            $this->modeCotisations->add($modeCotisation);
-            $modeCotisation->setCampagne($this);
-        }
-
-        return $this;
-    }
-
-    public function removeModeCotisation(ModeCotisation $modeCotisation): static
-    {
-        if ($this->modeCotisations->removeElement($modeCotisation)) {
-            if ($modeCotisation->getCampagne() === $this) {
-                $modeCotisation->setCampagne(null);
-            }
-        }
 
         return $this;
     }
@@ -247,6 +180,47 @@ class Campagne
     public function setAmendeJournaliere(float $amendeJournaliere): static
     {
         $this->amendeJournaliere = $amendeJournaliere;
+
+        return $this;
+    }
+
+    public function getGroupement(): ?Groupement
+    {
+        return $this->groupement;
+    }
+
+    public function setGroupement(?Groupement $groupement): static
+    {
+        $this->groupement = $groupement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ModeCotisation>
+     */
+    public function getModeCotisations(): Collection
+    {
+        return $this->modeCotisations;
+    }
+
+    public function addModeCotisation(ModeCotisation $modeCotisation): static
+    {
+        if (!$this->modeCotisations->contains($modeCotisation)) {
+            $this->modeCotisations->add($modeCotisation);
+            $modeCotisation->setCampagne($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModeCotisation(ModeCotisation $modeCotisation): static
+    {
+        if ($this->modeCotisations->removeElement($modeCotisation)) {
+            if ($modeCotisation->getCampagne() === $this) {
+                $modeCotisation->setCampagne(null);
+            }
+        }
 
         return $this;
     }
