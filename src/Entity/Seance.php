@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\SeanceRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Seance
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
