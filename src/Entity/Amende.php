@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\AmendeRepository;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: AmendeRepository::class)]
+class Amende
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
+    private ?float $montant = null;
+
+    #[ORM\Column]
+    private ?int $nbJours = null;
+
+    #[ORM\Column]
+    private ?bool $estPayee = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getMontant(): ?float
+    {
+        return $this->montant;
+    }
+
+    public function setMontant(float $montant): static
+    {
+        $this->montant = $montant;
+
+        return $this;
+    }
+
+    public function getNbJours(): ?int
+    {
+        return $this->nbJours;
+    }
+
+    public function setNbJours(int $nbJours): static
+    {
+        $this->nbJours = $nbJours;
+
+        return $this;
+    }
+
+    public function isEstPayee(): ?bool
+    {
+        return $this->estPayee;
+    }
+
+    public function setEstPayee(bool $estPayee): static
+    {
+        $this->estPayee = $estPayee;
+
+        return $this;
+    }
+}
