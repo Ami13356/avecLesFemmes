@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Periodicite;
 use App\Repository\CampagneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -51,6 +52,21 @@ class Campagne
      */
     #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
     private Collection $modeCotisations;
+
+    #[ORM\Column(enumType: Periodicite::class)]
+    private ?Periodicite $periodicite = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $jourRencontre = null;
+
+    #[ORM\Column]
+    private ?float $contribCaissePresent = null;
+
+    #[ORM\Column]
+    private ?float $contribCaisseAbsent = null;
+
+    #[ORM\Column]
+    private ?float $amendeJournaliere = null;
 
     public function __construct()
     {
@@ -171,6 +187,66 @@ class Campagne
                 $modeCotisation->setCampagne(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPeriodicite(): ?Periodicite
+    {
+        return $this->periodicite;
+    }
+
+    public function setPeriodicite(Periodicite $periodicite): static
+    {
+        $this->periodicite = $periodicite;
+
+        return $this;
+    }
+
+    public function getJourRencontre(): ?string
+    {
+        return $this->jourRencontre;
+    }
+
+    public function setJourRencontre(string $jourRencontre): static
+    {
+        $this->jourRencontre = $jourRencontre;
+
+        return $this;
+    }
+
+    public function getContribCaissePresent(): ?float
+    {
+        return $this->contribCaissePresent;
+    }
+
+    public function setContribCaissePresent(float $contribCaissePresent): static
+    {
+        $this->contribCaissePresent = $contribCaissePresent;
+
+        return $this;
+    }
+
+    public function getContribCaisseAbsent(): ?float
+    {
+        return $this->contribCaisseAbsent;
+    }
+
+    public function setContribCaisseAbsent(float $contribCaisseAbsent): static
+    {
+        $this->contribCaisseAbsent = $contribCaisseAbsent;
+
+        return $this;
+    }
+
+    public function getAmendeJournaliere(): ?float
+    {
+        return $this->amendeJournaliere;
+    }
+
+    public function setAmendeJournaliere(float $amendeJournaliere): static
+    {
+        $this->amendeJournaliere = $amendeJournaliere;
 
         return $this;
     }
