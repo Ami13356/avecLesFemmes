@@ -10,9 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MembreRepository::class)]
 class Membre extends User
 {
-    #[ORM\Column(length: 50)]
-    private ?string $matricule = null;
-
     #[ORM\ManyToOne(inversedBy: 'membres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
@@ -37,18 +34,6 @@ class Membre extends User
     {
         $this->modeCotisations = new ArrayCollection();
         $this->demandePrets = new ArrayCollection();
-    }
-
-    public function getMatricule(): ?string
-    {
-        return $this->matricule;
-    }
-
-    public function setMatricule(string $matricule): static
-    {
-        $this->matricule = $matricule;
-
-        return $this;
     }
 
     public function getRole(): ?Role
