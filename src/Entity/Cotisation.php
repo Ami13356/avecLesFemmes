@@ -4,11 +4,15 @@ namespace App\Entity;
 
 use App\Enum\StatutPresence;
 use App\Repository\CotisationRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CotisationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Cotisation
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
