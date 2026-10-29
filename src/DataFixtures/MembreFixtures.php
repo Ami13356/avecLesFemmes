@@ -23,18 +23,18 @@ class MembreFixtures extends Fixture implements DependentFixtureInterface
         $motDePasse = password_hash('Passer123', PASSWORD_BCRYPT);
 
         $membres = [
-            ['Fatou Sow', '771100001', 'Médina, Dakar', 'fatou.sow', 'Présidente', 'Groupement Teranga'],
-            ['Mariama Ba', '771100002', 'Grand Yoff, Dakar', 'mariama.ba', 'Secrétaire', 'Groupement Teranga'],
-            ['Khady Fall', '771100003', 'Parcelles Assainies, Dakar', 'khady.fall', 'Trésorière', 'Groupement Teranga'],
-            ['Aïssatou Diallo', '771100004', 'Médina, Dakar', 'aissatou.diallo', 'Membre', 'Groupement Teranga'],
-            ['Awa Ndiaye', '771100005', 'Fass, Dakar', 'awa.ndiaye', 'Membre', 'Groupement Teranga'],
-            ['Ndèye Sarr', '772100001', 'Rufisque', 'ndeye.sarr', 'Présidente', 'Groupement Yaakaar'],
-            ['Yacine Gueye', '772100002', 'Thiaroye, Dakar', 'yacine.gueye', 'Secrétaire', 'Groupement Yaakaar'],
-            ['Rokhaya Mbaye', '772100003', 'Rufisque', 'rokhaya.mbaye', 'Trésorière', 'Groupement Yaakaar'],
-            ['Binta Sy', '772100004', 'Bargny', 'binta.sy', 'Membre', 'Groupement Yaakaar'],
-            ['Coumba Diop', '773100001', 'Pikine, Dakar', 'coumba.diop', 'Présidente', 'Groupement Jigeen Ni'],
-            ['Dior Thiam', '773100002', 'Guédiawaye', 'dior.thiam', 'Secrétaire', 'Groupement Jigeen Ni'],
-            ['Maty Faye', '773100003', 'Pikine, Dakar', 'maty.faye', 'Trésorière', 'Groupement Jigeen Ni'],
+            ['Fatou Sow', '771100001', 'Médina, Dakar', 'fatou.sow', 'Présidente', 'Groupement Hospitalité'],
+            ['Mariama Ba', '771100002', 'Grand Yoff, Dakar', 'mariama.ba', 'Secrétaire', 'Groupement Hospitalité'],
+            ['Khady Fall', '771100003', 'Parcelles Assainies, Dakar', 'khady.fall', 'Trésorière', 'Groupement Hospitalité'],
+            ['Aïssatou Diallo', '771100004', 'Médina, Dakar', 'aissatou.diallo', 'Membre', 'Groupement Hospitalité'],
+            ['Awa Ndiaye', '771100005', 'Fass, Dakar', 'awa.ndiaye', 'Membre', 'Groupement Hospitalité'],
+            ['Ndèye Sarr', '772100001', 'Rufisque', 'ndeye.sarr', 'Présidente', 'Groupement Espoir'],
+            ['Yacine Gueye', '772100002', 'Thiaroye, Dakar', 'yacine.gueye', 'Secrétaire', 'Groupement Espoir'],
+            ['Rokhaya Mbaye', '772100003', 'Rufisque', 'rokhaya.mbaye', 'Trésorière', 'Groupement Espoir'],
+            ['Binta Sy', '772100004', 'Bargny', 'binta.sy', 'Membre', 'Groupement Espoir'],
+            ['Coumba Diop', '773100001', 'Pikine, Dakar', 'coumba.diop', 'Présidente', 'Groupement Les Femmes Unies'],
+            ['Dior Thiam', '773100002', 'Guédiawaye', 'dior.thiam', 'Secrétaire', 'Groupement Les Femmes Unies'],
+            ['Maty Faye', '773100003', 'Pikine, Dakar', 'maty.faye', 'Trésorière', 'Groupement Les Femmes Unies'],
         ];
 
         foreach ($membres as [$nomComplet, $tel, $adresse, $login, $nomRole, $nomGroupement]) {
