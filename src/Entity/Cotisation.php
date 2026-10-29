@@ -31,6 +31,10 @@ class Cotisation
     #[ORM\JoinColumn(nullable: false)]
     private ?Seance $seance = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cotisations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Membre $membre = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +84,18 @@ class Cotisation
     public function setSeance(?Seance $seance): static
     {
         $this->seance = $seance;
+
+        return $this;
+    }
+
+    public function getMembre(): ?Membre
+    {
+        return $this->membre;
+    }
+
+    public function setMembre(?Membre $membre): static
+    {
+        $this->membre = $membre;
 
         return $this;
     }
