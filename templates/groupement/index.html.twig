@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupements — Avec les Femmes{% endblock %}
+
+{% block body %}
+    <h1>Groupements</h1>
+    <p class="fil-ariane">{{ groupements|length }} groupement(s) enregistré(s)</p>
+
+    {% if groupements is empty %}
+        <p class="vide">Aucun groupement pour le moment.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Téléphone</th>
+                    <th>Adresse</th>
+                    <th>Exercice en cours</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for groupement in groupements %}
+                    <tr>
+                        <td><strong>{{ groupement.nom }}</strong></td>
+                        <td>{{ groupement.telephone }}</td>
+                        <td>{{ groupement.adresse }}</td>
+                        <td>
+                            {% if groupement.aUnExerciceEnCours %}
+                                {{ groupement.exerciceDateDebut }} → {{ groupement.exerciceDateFin }}
+                                <span class="badge ok">{{ groupement.exerciceStatut }}</span>
+                            {% else %}
+                                <span class="badge alerte">{{ groupement.exerciceStatut }}</span>
+                            {% endif %}
+                        </td>
+                        <td><a class="bouton" href="{{ path('groupement_campagnes', {id: groupement.id}) }}">Campagnes</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
