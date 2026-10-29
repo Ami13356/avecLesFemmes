@@ -4,13 +4,17 @@ namespace App\Entity;
 
 use App\Enum\StatutExercice;
 use App\Repository\ExerciceRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExerciceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Exercice
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -24,6 +28,9 @@ class Exercice
 
     #[ORM\Column]
     private ?\DateTime $dateLimitePret = null;
+
+    #[ORM\Column]
+    private ?\DateTime $dateRetribution = null;
 
     #[ORM\Column(enumType: StatutExercice::class)]
     private ?StatutExercice $statut = null;
@@ -84,6 +91,18 @@ class Exercice
         return $this;
     }
 
+    public function getDateRetribution(): ?\DateTime
+    {
+        return $this->dateRetribution;
+    }
+
+    public function setDateRetribution(\DateTime $dateRetribution): static
+    {
+        $this->dateRetribution = $dateRetribution;
+
+        return $this;
+    }
+
     public function getStatut(): ?StatutExercice
     {
         return $this->statut;
@@ -129,7 +148,6 @@ class Exercice
     public function removeCampagne(Campagne $campagne): static
     {
         if ($this->campagnes->removeElement($campagne)) {
-            // set the owning side to null (unless already changed)
             if ($campagne->getExercice() === $this) {
                 $campagne->setExercice(null);
             }
