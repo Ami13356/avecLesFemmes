@@ -10,9 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: MembreRepository::class)]
 class Membre extends User
 {
-    #[ORM\Column(length: 50)]
-    private ?string $matricule = null;
-
     #[ORM\ManyToOne(inversedBy: 'membres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
@@ -28,27 +25,22 @@ class Membre extends User
     private Collection $modeCotisations;
 
     /**
-     * @var Collection<int, DemandePret>
+     * @var Collection<int, Cotisation>
      */
-    #[ORM\OneToMany(targetEntity: DemandePret::class, mappedBy: 'membre')]
-    private Collection $demandePrets;
+    #[ORM\OneToMany(targetEntity: Cotisation::class, mappedBy: 'membre')]
+    private Collection $cotisations;
+
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'membre')]
+    private Collection $amendes;
 
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
-        $this->demandePrets = new ArrayCollection();
-    }
-
-    public function getMatricule(): ?string
-    {
-        return $this->matricule;
-    }
-
-    public function setMatricule(string $matricule): static
-    {
-        $this->matricule = $matricule;
-
-        return $this;
+        $this->cotisations = new ArrayCollection();
+        $this->amendes = new ArrayCollection();
     }
 
     public function getRole(): ?Role
@@ -105,28 +97,59 @@ class Membre extends User
     }
 
     /**
-     * @return Collection<int, DemandePret>
+     * @return Collection<int, Cotisation>
      */
-    public function getDemandePrets(): Collection
+    public function getCotisations(): Collection
     {
-        return $this->demandePrets;
+        return $this->cotisations;
     }
 
-    public function addDemandePret(DemandePret $demandePret): static
+    public function addCotisation(Cotisation $cotisation): static
     {
-        if (!$this->demandePrets->contains($demandePret)) {
-            $this->demandePrets->add($demandePret);
-            $demandePret->setMembre($this);
+        if (!$this->cotisations->contains($cotisation)) {
+            $this->cotisations->add($cotisation);
+            $cotisation->setMembre($this);
         }
 
         return $this;
     }
 
-    public function removeDemandePret(DemandePret $demandePret): static
+    public function removeCotisation(Cotisation $cotisation): static
     {
-        if ($this->demandePrets->removeElement($demandePret)) {
-            if ($demandePret->getMembre() === $this) {
-                $demandePret->setMembre(null);
+        if ($this->cotisations->removeElement($cotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($cotisation->getMembre() === $this) {
+                $cotisation->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            // set the owning side to null (unless already changed)
+            if ($amende->getMembre() === $this) {
+                $amende->setMembre(null);
             }
         }
 
