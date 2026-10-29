@@ -27,6 +27,10 @@ class Cotisation
     #[ORM\Column(enumType: StatutPresence::class)]
     private ?StatutPresence $presence = null;
 
+    #[ORM\ManyToOne(inversedBy: 'cotisations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Seance $seance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -64,6 +68,18 @@ class Cotisation
     public function setPresence(StatutPresence $presence): static
     {
         $this->presence = $presence;
+
+        return $this;
+    }
+
+    public function getSeance(): ?Seance
+    {
+        return $this->seance;
+    }
+
+    public function setSeance(?Seance $seance): static
+    {
+        $this->seance = $seance;
 
         return $this;
     }
