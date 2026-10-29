@@ -1,3 +1,63 @@
-body {
-    background-color: skyblue;
+:root {
+    --violet: #5b2a86;
+    --violet-clair: #f3ecf9;
+    --texte: #2b2b2b;
+    --gris: #6b6b6b;
+    --bordure: #e2dce8;
+    --vert: #1f7a4d;
+    --rouge: #b3261e;
 }
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    color: var(--texte);
+    background: #faf8fc;
+    line-height: 1.5;
+}
+
+.entete {
+    background: var(--violet);
+    color: #fff;
+    padding: 1rem 2rem;
+}
+.entete a { color: #fff; text-decoration: none; font-weight: 600; font-size: 1.2rem; }
+
+main { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+
+h1 { color: var(--violet); margin-bottom: .25rem; }
+.fil-ariane { color: var(--gris); font-size: .9rem; margin-bottom: 1.5rem; }
+.fil-ariane a { color: var(--violet); }
+
+table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--bordure); }
+th, td { padding: .6rem .8rem; text-align: left; border-bottom: 1px solid var(--bordure); }
+th { background: var(--violet-clair); color: var(--violet); font-size: .85rem; text-transform: uppercase; }
+td.montant, th.montant { text-align: right; white-space: nowrap; }
+
+.bouton {
+    display: inline-block;
+    padding: .3rem .8rem;
+    border-radius: 6px;
+    background: var(--violet);
+    color: #fff;
+    text-decoration: none;
+    font-size: .85rem;
+}
+.bouton.secondaire { background: #fff; color: var(--violet); border: 1px solid var(--violet); }
+
+.badge { padding: .1rem .6rem; border-radius: 999px; font-size: .8rem; background: var(--violet-clair); color: var(--violet); }
+.badge.ok { background: #e3f4ea; color: var(--vert); }
+.badge.alerte { background: #fbe8e6; color: var(--rouge); }
+
+.carte { background: #fff; border: 1px solid var(--bordure); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem; }
+.carte h2 { margin-top: 0; color: var(--violet); }
+.carte h3 { margin-bottom: .4rem; font-size: 1rem; color: var(--gris); }
+
+.totaux { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+.total { flex: 1; min-width: 180px; background: var(--violet-clair); border-radius: 8px; padding: .75rem 1rem; }
+.total span { display: block; font-size: .8rem; color: var(--gris); }
+.total strong { font-size: 1.25rem; color: var(--violet); }
+
+.vide { color: var(--gris); font-style: italic; }
