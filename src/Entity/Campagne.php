@@ -56,10 +56,6 @@ class Campagne
     #[ORM\Column]
     private ?float $amendeJournaliere = null;
 
-    #[ORM\ManyToOne(inversedBy: 'campagnes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Groupement $groupement = null;
-
     /**
      * @var Collection<int, ModeCotisation>
      */
@@ -180,18 +176,6 @@ class Campagne
     public function setAmendeJournaliere(float $amendeJournaliere): static
     {
         $this->amendeJournaliere = $amendeJournaliere;
-
-        return $this;
-    }
-
-    public function getGroupement(): ?Groupement
-    {
-        return $this->groupement;
-    }
-
-    public function setGroupement(?Groupement $groupement): static
-    {
-        $this->groupement = $groupement;
 
         return $this;
     }
