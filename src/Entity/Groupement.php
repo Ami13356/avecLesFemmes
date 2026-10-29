@@ -35,12 +35,6 @@ class Groupement
     private Collection $membres;
 
     /**
-     * @var Collection<int, Admin>
-     */
-    #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'groupement')]
-    private Collection $admins;
-
-    /**
      * @var Collection<int, Campagne>
      */
     #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'groupement')]
@@ -49,7 +43,6 @@ class Groupement
     public function __construct()
     {
         $this->membres = new ArrayCollection();
-        $this->admins = new ArrayCollection();
         $this->campagnes = new ArrayCollection();
     }
 
@@ -117,35 +110,6 @@ class Groupement
         if ($this->membres->removeElement($membre)) {
             if ($membre->getGroupement() === $this) {
                 $membre->setGroupement(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Admin>
-     */
-    public function getAdmins(): Collection
-    {
-        return $this->admins;
-    }
-
-    public function addAdmin(Admin $admin): static
-    {
-        if (!$this->admins->contains($admin)) {
-            $this->admins->add($admin);
-            $admin->setGroupement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAdmin(Admin $admin): static
-    {
-        if ($this->admins->removeElement($admin)) {
-            if ($admin->getGroupement() === $this) {
-                $admin->setGroupement(null);
             }
         }
 
