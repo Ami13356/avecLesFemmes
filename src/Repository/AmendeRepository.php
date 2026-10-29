@@ -16,28 +16,22 @@ class AmendeRepository extends ServiceEntityRepository
         parent::__construct($registry, Amende::class);
     }
 
-//    /**
-//     * @return Amende[] Returns an array of Amende objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Amende
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Toutes les amendes des séances d'une campagne (membre chargé avec).
+     *
+     * @return Amende[]
+     */
+    public function findByCampagne(int $campagneId): array
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.seance', 's')
+            ->innerJoin('a.membre', 'm')
+            ->addSelect('s', 'm')
+            ->andWhere('s.campagne = :campagneId')
+            ->setParameter('campagneId', $campagneId)
+            ->orderBy('s.dateSeance', 'ASC')
+            ->addOrderBy('m.nomComplet', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

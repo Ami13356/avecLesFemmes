@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Exercice;
+use App\Entity\Groupement;
+use App\Enum\StatutExercice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,18 @@ class ExerciceRepository extends ServiceEntityRepository
         parent::__construct($registry, Exercice::class);
     }
 
-//    /**
-//     * @return Exercice[] Returns an array of Exercice objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Exercice
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Exercice en cours d'un groupement (null s'il n'y en a pas).
+     */
+    public function findEnCours(Groupement $groupement): ?Exercice
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.groupement = :groupement')
+            ->andWhere('e.statut = :statut')
+            ->setParameter('groupement', $groupement)
+            ->setParameter('statut', StatutExercice::EN_COURS)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

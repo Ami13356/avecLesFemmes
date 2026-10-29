@@ -16,28 +16,22 @@ class ModeCotisationRepository extends ServiceEntityRepository
         parent::__construct($registry, ModeCotisation::class);
     }
 
-//    /**
-//     * @return ModeCotisation[] Returns an array of ModeCotisation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?ModeCotisation
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Les membres d'une campagne sont ceux qui y ont un mode de cotisation.
+     * On part de ModeCotisation pour récupérer aussi le mode (fixe ou libre).
+     *
+     * @return ModeCotisation[]
+     */
+    public function findByCampagne(int $campagneId): array
+    {
+        return $this->createQueryBuilder('mc')
+            ->innerJoin('mc.membre', 'm')
+            ->innerJoin('m.role', 'r')
+            ->addSelect('m', 'r')
+            ->andWhere('mc.campagne = :campagneId')
+            ->setParameter('campagneId', $campagneId)
+            ->orderBy('m.nomComplet', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
