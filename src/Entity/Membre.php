@@ -30,10 +30,17 @@ class Membre extends User
     #[ORM\OneToMany(targetEntity: Cotisation::class, mappedBy: 'membre')]
     private Collection $cotisations;
 
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'membre')]
+    private Collection $amendes;
+
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
         $this->cotisations = new ArrayCollection();
+        $this->amendes = new ArrayCollection();
     }
 
     public function getRole(): ?Role
@@ -113,6 +120,36 @@ class Membre extends User
             // set the owning side to null (unless already changed)
             if ($cotisation->getMembre() === $this) {
                 $cotisation->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            // set the owning side to null (unless already changed)
+            if ($amende->getMembre() === $this) {
+                $amende->setMembre(null);
             }
         }
 
