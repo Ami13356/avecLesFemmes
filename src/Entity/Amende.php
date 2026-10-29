@@ -25,6 +25,10 @@ class Amende
     #[ORM\Column]
     private ?bool $estPayee = null;
 
+    #[ORM\ManyToOne(inversedBy: 'amendes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Seance $seance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +66,18 @@ class Amende
     public function setEstPayee(bool $estPayee): static
     {
         $this->estPayee = $estPayee;
+
+        return $this;
+    }
+
+    public function getSeance(): ?Seance
+    {
+        return $this->seance;
+    }
+
+    public function setSeance(?Seance $seance): static
+    {
+        $this->seance = $seance;
 
         return $this;
     }

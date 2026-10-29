@@ -32,9 +32,16 @@ class Seance
     #[ORM\OneToMany(targetEntity: Cotisation::class, mappedBy: 'seance')]
     private Collection $cotisations;
 
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'seance')]
+    private Collection $amendes;
+
     public function __construct()
     {
         $this->cotisations = new ArrayCollection();
+        $this->amendes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -90,6 +97,36 @@ class Seance
             // set the owning side to null (unless already changed)
             if ($cotisation->getSeance() === $this) {
                 $cotisation->setSeance(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            // set the owning side to null (unless already changed)
+            if ($amende->getSeance() === $this) {
+                $amende->setSeance(null);
             }
         }
 
