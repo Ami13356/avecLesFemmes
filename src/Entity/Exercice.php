@@ -38,6 +38,9 @@ class Exercice
     #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'exercice')]
     private Collection $campagnes;
 
+    #[ORM\Column]
+    private ?\DateTime $dateRetribution = null;
+
     public function __construct()
     {
         $this->campagnes = new ArrayCollection();
@@ -134,6 +137,18 @@ class Exercice
                 $campagne->setExercice(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateRetribution(): ?\DateTime
+    {
+        return $this->dateRetribution;
+    }
+
+    public function setDateRetribution(\DateTime $dateRetribution): static
+    {
+        $this->dateRetribution = $dateRetribution;
 
         return $this;
     }
