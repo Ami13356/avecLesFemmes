@@ -62,6 +62,10 @@ class Campagne
     #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
     private Collection $modeCotisations;
 
+    #[ORM\ManyToOne(inversedBy: 'campagnes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Exercice $exercice = null;
+
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
@@ -205,6 +209,18 @@ class Campagne
                 $modeCotisation->setCampagne(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getExercice(): ?Exercice
+    {
+        return $this->exercice;
+    }
+
+    public function setExercice(?Exercice $exercice): static
+    {
+        $this->exercice = $exercice;
 
         return $this;
     }
