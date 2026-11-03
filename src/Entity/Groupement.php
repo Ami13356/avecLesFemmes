@@ -40,6 +40,9 @@ class Groupement
     #[ORM\OneToMany(targetEntity: Exercice::class, mappedBy: 'groupement', orphanRemoval: true)]
     private Collection $exercices;
 
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ville = null;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
@@ -141,6 +144,18 @@ class Groupement
                 $exercice->setGroupement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): static
+    {
+        $this->ville = $ville;
 
         return $this;
     }

@@ -11,16 +11,17 @@ class GroupementFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $groupements = [
-            ['Groupement Hospitalité', '771000001', 'Médina, Dakar'],
-            ['Groupement Espoir', '772000002', 'Rufisque'],
-            ['Groupement Les Femmes Unies', '773000003', null],
+            ['Groupement Hospitalité', '771000001', 'Médina, Dakar', 'Dakar'],
+            ['Groupement Espoir', '772000002', 'Rufisque', 'Rufisque'],
+            ['Groupement Les Femmes Unies', '773000003', null, 'Thiès'],
         ];
 
-        foreach ($groupements as [$nom, $tel, $adresse]) {
+        foreach ($groupements as [$nom, $tel, $adresse, $ville]) {
             $groupement = (new Groupement())
                 ->setNom($nom)
                 ->setTelephone($tel)
-                ->setAdresse($adresse);
+                ->setAdresse($adresse)
+                ->setVille($ville);
 
             $manager->persist($groupement);
         }
