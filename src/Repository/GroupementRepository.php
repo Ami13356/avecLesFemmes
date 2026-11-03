@@ -41,4 +41,17 @@ class GroupementRepository extends ServiceEntityRepository
 
         return new Paginator($qb->getQuery(), false);
     }
+
+    
+    /**
+     * Un groupement par son identifiant (requête personnalisée, remplace find()).
+     */
+    public function findOneParId(int $id): ?Groupement
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
