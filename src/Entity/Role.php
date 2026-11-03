@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\RoleRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Role
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -67,7 +71,6 @@ class Role
     public function removeMembre(Membre $membre): static
     {
         if ($this->membres->removeElement($membre)) {
-            // set the owning side to null (unless already changed)
             if ($membre->getRole() === $this) {
                 $membre->setRole(null);
             }

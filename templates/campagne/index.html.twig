@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Campagnes de {{ groupementNom }}{% endblock %}
+
+{% block body %}
+    <h1>Campagnes de {{ groupementNom }}</h1>
+    <p class="fil-ariane"><a href="{{ path('groupement_index') }}">Groupements</a> › {{ groupementNom }}</p>
+
+    {% if campagnes is empty %}
+        <p class="vide">Aucune campagne pour ce groupement.</p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Type</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th class="montant">Montant</th>
+                    <th>Périodicité</th>
+                    <th>Jour</th>
+                    <th>Exercice</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campagne in campagnes %}
+                    <tr>
+                        <td><strong>{{ campagne.nom }}</strong></td>
+                        <td><span class="badge">{{ campagne.type }}</span></td>
+                        <td>{{ campagne.dateDebut }}</td>
+                        <td>{{ campagne.dateFin }}</td>
+                        <td class="montant">{{ campagne.montant|number_format(0, ',', ' ') }} FCFA</td>
+                        <td>{{ campagne.periodicite }}</td>
+                        <td>{{ campagne.jourRencontre }}</td>
+                        <td>{{ campagne.exerciceStatut }}</td>
+                        <td>
+                            <a class="bouton" href="{{ path('campagne_membres', {id: campagne.id}) }}">Membres</a>
+                            {% if campagne.aDesSeances %}
+                                <a class="bouton secondaire" href="{{ path('campagne_seances', {id: campagne.id}) }}">Séances</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

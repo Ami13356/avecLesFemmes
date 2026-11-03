@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Groupement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -16,28 +17,50 @@ class GroupementRepository extends ServiceEntityRepository
         parent::__construct($registry, Groupement::class);
     }
 
-//    /**
-//     * @return Groupement[] Returns an array of Groupement objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('g.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Requête unique pour la liste : elle filtre (téléphone et/ou ville) ET pagine.
+     * Sans filtre, elle renvoie simplement la première page de tous les groupements.
+     */
+    public function findByFiltre(?string $telephone, ?string $ville, int $page, int $parPage): Paginator
+    {
+        $qb = $this->createQueryBuilder('g')
+            ->orderBy('g.nom');
 
-//    public function findOneBySomeField($value): ?Groupement
-//    {
-//        return $this->createQueryBuilder('g')
-//            ->andWhere('g.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($telephone !== null && trim($telephone) !== '') {
+            $qb->andWhere('g.telephone LIKE :telephone')
+                ->setParameter('telephone', '%' . addcslashes(trim($telephone), '%_\\') . '%');
+        }
+
+        if ($ville !== null && trim($ville) !== '') {
+            $qb->andWhere('LOWER(g.ville) LIKE :ville')
+                ->setParameter('ville', '%' . addcslashes(mb_strtolower(trim($ville)), '%_\\') . '%');
+        }
+
+        $qb->setFirstResult((max(1, $page) - 1) * $parPage)
+            ->setMaxResults($parPage);
+
+        return new Paginator($qb->getQuery(), false);
+    }
+
+    
+    /**
+     * Un groupement par son identifiant (requête personnalisée, remplace find()).
+     */
+    public function findOneParId(int $id): ?Groupement
+    {
+        return $this->createQueryBuilder('g')
+            ->andWhere('g.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+    
+    /**
+     * Enregistre un nouveau groupement en base.
+     */
+    public function enregistrer(Groupement $groupement): void
+    {
+        $this->getEntityManager()->persist($groupement);
+        $this->getEntityManager()->flush();
+    }
 }

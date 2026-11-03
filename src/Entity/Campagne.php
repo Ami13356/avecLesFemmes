@@ -2,13 +2,16 @@
 
 namespace App\Entity;
 
+use App\Enum\Periodicite;
 use App\Repository\CampagneRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampagneRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
 #[ORM\DiscriminatorMap([
@@ -19,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
 ])]
 class Campagne
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -27,8 +32,8 @@ class Campagne
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateDebut = null;
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    private ?\DateTimeImmutable $dateDebut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $dateFin = null;
@@ -36,15 +41,20 @@ class Campagne
     #[ORM\Column]
     private ?float $montant = null;
 
+    #[ORM\Column(enumType: Periodicite::class)]
+    private ?Periodicite $periodicite = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $jourRencontre = null;
+
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?float $contribCaissePresent = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $updatedAt = null;
+    #[ORM\Column]
+    private ?float $contribCaisseAbsent = null;
 
-    #[ORM\ManyToOne(inversedBy: 'campagnes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Groupement $groupement = null;
+    #[ORM\Column]
+    private ?float $amendeJournaliere = null;
 
     /**
      * @var Collection<int, ModeCotisation>
@@ -52,9 +62,20 @@ class Campagne
     #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'campagne')]
     private Collection $modeCotisations;
 
+    #[ORM\ManyToOne(inversedBy: 'campagnes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Exercice $exercice = null;
+
+    /**
+     * @var Collection<int, Seance>
+     */
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'campagne')]
+    private Collection $seances;
+
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
+        $this->seances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -74,12 +95,12 @@ class Campagne
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTime
+    public function getDateDebut(): ?\DateTimeImmutable
     {
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTime $dateDebut): static
+    public function setDateDebut(\DateTimeImmutable $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
 
@@ -110,38 +131,62 @@ class Campagne
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getPeriodicite(): ?Periodicite
     {
-        return $this->createdAt;
+        return $this->periodicite;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setPeriodicite(Periodicite $periodicite): static
     {
-        $this->createdAt = $createdAt;
+        $this->periodicite = $periodicite;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getJourRencontre(): ?string
     {
-        return $this->updatedAt;
+        return $this->jourRencontre;
     }
 
-    public function setUpdatedAt(?\DateTime $updatedAt): static
+    public function setJourRencontre(string $jourRencontre): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->jourRencontre = $jourRencontre;
 
         return $this;
     }
 
-    public function getGroupement(): ?Groupement
+    public function getContribCaissePresent(): ?float
     {
-        return $this->groupement;
+        return $this->contribCaissePresent;
     }
 
-    public function setGroupement(?Groupement $groupement): static
+    public function setContribCaissePresent(float $contribCaissePresent): static
     {
-        $this->groupement = $groupement;
+        $this->contribCaissePresent = $contribCaissePresent;
+
+        return $this;
+    }
+
+    public function getContribCaisseAbsent(): ?float
+    {
+        return $this->contribCaisseAbsent;
+    }
+
+    public function setContribCaisseAbsent(float $contribCaisseAbsent): static
+    {
+        $this->contribCaisseAbsent = $contribCaisseAbsent;
+
+        return $this;
+    }
+
+    public function getAmendeJournaliere(): ?float
+    {
+        return $this->amendeJournaliere;
+    }
+
+    public function setAmendeJournaliere(float $amendeJournaliere): static
+    {
+        $this->amendeJournaliere = $amendeJournaliere;
 
         return $this;
     }
@@ -169,6 +214,48 @@ class Campagne
         if ($this->modeCotisations->removeElement($modeCotisation)) {
             if ($modeCotisation->getCampagne() === $this) {
                 $modeCotisation->setCampagne(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getExercice(): ?Exercice
+    {
+        return $this->exercice;
+    }
+
+    public function setExercice(?Exercice $exercice): static
+    {
+        $this->exercice = $exercice;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seance>
+     */
+    public function getSeances(): Collection
+    {
+        return $this->seances;
+    }
+
+    public function addSeance(Seance $seance): static
+    {
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setCampagne($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeance(Seance $seance): static
+    {
+        if ($this->seances->removeElement($seance)) {
+            // set the owning side to null (unless already changed)
+            if ($seance->getCampagne() === $this) {
+                $seance->setCampagne(null);
             }
         }
 

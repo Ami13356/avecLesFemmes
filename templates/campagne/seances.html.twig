@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Séances — {{ campagne.nom }}{% endblock %}
+
+{% block body %}
+    <h1>Séances de la campagne « {{ campagne.nom }} »</h1>
+    <p class="fil-ariane">
+        <a href="{{ path('groupement_index') }}">Groupements</a> ›
+        <a href="{{ path('groupement_campagnes', {id: campagne.groupementId}) }}">{{ campagne.groupementNom }}</a> ›
+        {{ campagne.nom }} ({{ campagne.type }})
+    </p>
+
+    {% if seances is empty %}
+        <p class="vide">Aucune séance enregistrée pour cette campagne.</p>
+    {% endif %}
+
+    {% for seance in seances %}
+        <section class="carte">
+            <h2>Séance du {{ seance.dateSeance }}</h2>
+
+            <div class="totaux">
+                <div class="total"><span>Total collecté</span><strong>{{ seance.totalCollecte|number_format(0, ',', ' ') }} FCFA</strong></div>
+                <div class="total"><span>Total des amendes</span><strong>{{ seance.totalAmendes|number_format(0, ',', ' ') }} FCFA</strong></div>
+                <div class="total"><span>Caisse sociale</span><strong>{{ seance.totalCaisseSociale|number_format(0, ',', ' ') }} FCFA</strong></div>
+            </div>
+
+            <h3>Cotisations</h3>
+            {% if seance.cotisations is empty %}
+                <p class="vide">Aucune cotisation.</p>
+            {% else %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Membre</th>
+                            <th>Présence</th>
+                            <th class="montant">Montant</th>
+                            <th class="montant">Caisse sociale</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cotisation in seance.cotisations %}
+                            <tr>
+                                <td>{{ cotisation.membre }}</td>
+                                <td>{{ cotisation.presence }}</td>
+                                <td class="montant">{{ cotisation.montant|number_format(0, ',', ' ') }} FCFA</td>
+                                <td class="montant">{{ cotisation.contribCaisse|number_format(0, ',', ' ') }} FCFA</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <h3>Amendes</h3>
+            {% if seance.amendes is empty %}
+                <p class="vide">Aucune amende.</p>
+            {% else %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Membre</th>
+                            <th>Jours</th>
+                            <th class="montant">Montant</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for amende in seance.amendes %}
+                            <tr>
+                                <td>{{ amende.membre }}</td>
+                                <td>{{ amende.nbJours }}</td>
+                                <td class="montant">{{ amende.montant|number_format(0, ',', ' ') }} FCFA</td>
+                                <td>
+                                    {% if amende.estPayee %}
+                                        <span class="badge ok">Payée</span>
+                                    {% else %}
+                                        <span class="badge alerte">Impayée</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </section>
+    {% endfor %}
+{% endblock %}

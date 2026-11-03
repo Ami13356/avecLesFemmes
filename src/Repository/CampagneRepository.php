@@ -16,28 +16,37 @@ class CampagneRepository extends ServiceEntityRepository
         parent::__construct($registry, Campagne::class);
     }
 
-//    /**
-//     * @return Campagne[] Returns an array of Campagne objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Toutes les campagnes d'un groupement (via ses exercices), les plus récentes d'abord.
+     *
+     * @return Campagne[]
+     */
+    public function findByGroupement(int $groupementId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.exercice', 'e')
+            ->innerJoin('e.groupement', 'g')
+            ->addSelect('e', 'g')
+            ->andWhere('g.id = :groupementId')
+            ->setParameter('groupementId', $groupementId)
+            ->orderBy('c.dateDebut', 'DESC')
+            ->addOrderBy('c.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Campagne
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Une campagne avec son exercice et son groupement déjà chargés.
+     */
+    public function findOneAvecGroupement(int $id): ?Campagne
+    {
+        return $this->createQueryBuilder('c')
+            ->innerJoin('c.exercice', 'e')
+            ->innerJoin('e.groupement', 'g')
+            ->addSelect('e', 'g')
+            ->andWhere('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

@@ -3,13 +3,17 @@
 namespace App\Entity;
 
 use App\Repository\GroupementRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GroupementRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Groupement
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -18,6 +22,12 @@ class Groupement
     #[ORM\Column(length: 100)]
     private ?string $nom = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $telephone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
     /**
      * @var Collection<int, Membre>
      */
@@ -25,22 +35,18 @@ class Groupement
     private Collection $membres;
 
     /**
-     * @var Collection<int, Admin>
+     * @var Collection<int, Exercice>
      */
-    #[ORM\OneToMany(targetEntity: Admin::class, mappedBy: 'groupement')]
-    private Collection $admins;
+    #[ORM\OneToMany(targetEntity: Exercice::class, mappedBy: 'groupement', orphanRemoval: true)]
+    private Collection $exercices;
 
-    /**
-     * @var Collection<int, Campagne>
-     */
-    #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'groupement')]
-    private Collection $campagnes;
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $ville = null;
 
     public function __construct()
     {
         $this->membres = new ArrayCollection();
-        $this->admins = new ArrayCollection();
-        $this->campagnes = new ArrayCollection();
+        $this->exercices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,6 +62,30 @@ class Groupement
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(string $telephone): static
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }
@@ -90,59 +120,42 @@ class Groupement
     }
 
     /**
-     * @return Collection<int, Admin>
+     * @return Collection<int, Exercice>
      */
-    public function getAdmins(): Collection
+    public function getExercices(): Collection
     {
-        return $this->admins;
+        return $this->exercices;
     }
 
-    public function addAdmin(Admin $admin): static
+    public function addExercice(Exercice $exercice): static
     {
-        if (!$this->admins->contains($admin)) {
-            $this->admins->add($admin);
-            $admin->setGroupement($this);
+        if (!$this->exercices->contains($exercice)) {
+            $this->exercices->add($exercice);
+            $exercice->setGroupement($this);
         }
 
         return $this;
     }
 
-    public function removeAdmin(Admin $admin): static
+    public function removeExercice(Exercice $exercice): static
     {
-        if ($this->admins->removeElement($admin)) {
-            if ($admin->getGroupement() === $this) {
-                $admin->setGroupement(null);
+        if ($this->exercices->removeElement($exercice)) {
+            if ($exercice->getGroupement() === $this) {
+                $exercice->setGroupement(null);
             }
         }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Campagne>
-     */
-    public function getCampagnes(): Collection
+    public function getVille(): ?string
     {
-        return $this->campagnes;
+        return $this->ville;
     }
 
-    public function addCampagne(Campagne $campagne): static
+    public function setVille(?string $ville): static
     {
-        if (!$this->campagnes->contains($campagne)) {
-            $this->campagnes->add($campagne);
-            $campagne->setGroupement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCampagne(Campagne $campagne): static
-    {
-        if ($this->campagnes->removeElement($campagne)) {
-            if ($campagne->getGroupement() === $this) {
-                $campagne->setGroupement(null);
-            }
-        }
+        $this->ville = $ville;
 
         return $this;
     }
