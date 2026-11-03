@@ -24,6 +24,9 @@
             <a href="{{ path('groupement_index') }}">Avec les Femmes — Super administrateur</a>
         </header>
         <main>
+            {% for message in app.flashes('succes') %}
+                <div class="flash">{{ message }}</div>
+            {% endfor %}
             {% block body %}{% endblock %}
         </main>
     </body>
