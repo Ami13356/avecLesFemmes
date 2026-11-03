@@ -19,7 +19,7 @@ class GroupementRepository extends ServiceEntityRepository
 
     /**
      * Requête unique pour la liste : elle filtre (téléphone et/ou ville) ET pagine.
-     * Remplace findAll(). Sans filtre, elle renvoie simplement la première page de tous les groupements.
+     * Sans filtre, elle renvoie simplement la première page de tous les groupements.
      */
     public function findByFiltre(?string $telephone, ?string $ville, int $page, int $parPage): Paginator
     {
