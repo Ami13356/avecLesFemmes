@@ -4,7 +4,9 @@ namespace App\Service;
 
 use App\DTO\GroupementDTO;
 use App\DTO\GroupementFiltreDTO;
+use App\DTO\GroupementFormDTO;
 use App\DTO\PaginationDTO;
+use App\Entity\Groupement;
 use App\Repository\ExerciceRepository;
 use App\Repository\GroupementRepository;
 
@@ -47,5 +49,24 @@ class GroupementService
             $total,
             self::PAR_PAGE,
         );
+    }
+
+    /**
+     * Reçoit le DTO d'entrée du formulaire, crée l'entité, l'enregistre
+     * et renvoie le DTO de sortie.
+     */
+    public function creer(GroupementFormDTO $donnees): GroupementDTO
+    {
+        $adresse = trim((string) $donnees->adresse);
+
+        $groupement = (new Groupement())
+            ->setNom(trim($donnees->nom))
+            ->setTelephone($donnees->telephone)
+            ->setVille(trim($donnees->ville))
+            ->setAdresse($adresse !== '' ? $adresse : null);
+
+        $this->groupementRepository->enregistrer($groupement);
+
+        return GroupementDTO::fromEntity($groupement, null);
     }
 }
