@@ -22,7 +22,7 @@ class CampagneService
      */
     public function getNomGroupement(int $groupementId): ?string
     {
-        return $this->groupementRepository->find($groupementId)?->getNom();
+        return $this->groupementRepository->findOneParId($groupementId)?->getNom();
     }
 
     /**

@@ -4,26 +4,37 @@
 
 {% block body %}
     <h1>Groupements</h1>
-    <p class="fil-ariane">{{ groupements|length }} groupement(s) enregistré(s)</p>
+    <p class="fil-ariane">{{ pagination.total }} groupement(s) trouvé(s)</p>
 
-    {% if groupements is empty %}
-        <p class="vide">Aucun groupement pour le moment.</p>
+    {{ form_start(form) }}
+        <div class="filtre">
+            {{ form_row(form.telephone) }}
+            {{ form_row(form.ville) }}
+            {{ form_row(form.filtrer) }}
+            <a class="bouton secondaire" href="{{ path('groupement_index') }}">Réinitialiser</a>
+        </div>
+    {{ form_end(form) }}
+
+    {% if pagination.items is empty %}
+        <p class="vide">Aucun groupement ne correspond à votre recherche.</p>
     {% else %}
         <table>
             <thead>
                 <tr>
                     <th>Nom</th>
                     <th>Téléphone</th>
+                    <th>Ville</th>
                     <th>Adresse</th>
                     <th>Exercice en cours</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for groupement in groupements %}
+                {% for groupement in pagination.items %}
                     <tr>
                         <td><strong>{{ groupement.nom }}</strong></td>
                         <td>{{ groupement.telephone }}</td>
+                        <td>{{ groupement.ville }}</td>
                         <td>{{ groupement.adresse }}</td>
                         <td>
                             {% if groupement.aUnExerciceEnCours %}
@@ -38,5 +49,25 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if pagination.nbPages > 1 %}
+            <nav class="pagination">
+                {% if pagination.aPagePrecedente %}
+                    <a href="{{ path('groupement_index', app.request.query.all|merge({page: pagination.page - 1})) }}">‹ Précédent</a>
+                {% endif %}
+
+                {% for numero in 1..pagination.nbPages %}
+                    {% if numero == pagination.page %}
+                        <strong>{{ numero }}</strong>
+                    {% else %}
+                        <a href="{{ path('groupement_index', app.request.query.all|merge({page: numero})) }}">{{ numero }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if pagination.aPageSuivante %}
+                    <a href="{{ path('groupement_index', app.request.query.all|merge({page: pagination.page + 1})) }}">Suivant ›</a>
+                {% endif %}
+            </nav>
+        {% endif %}
     {% endif %}
 {% endblock %}
