@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\DTO\GroupementFiltreDTO;
+use App\DTO\GroupementFormDTO;
 use App\Form\GroupementFiltreType;
+use App\Form\GroupementType;
 use App\Service\GroupementService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,6 +44,28 @@ class GroupementController extends AbstractController
         return $this->render('groupement/index.html.twig', [
             'form' => $form,
             'pagination' => $pagination,
+        ]);
+    }
+
+    /**
+     * Le contrôleur récupère le DTO rempli par le formulaire et l'envoie au service.
+     */
+    #[Route('/groupement/nouveau', name: 'groupement_new')]
+    public function new(Request $request): Response
+    {
+        $donnees = new GroupementFormDTO();
+        $form = $this->createForm(GroupementType::class, $donnees);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $groupement = $this->groupementService->creer($donnees);
+            $this->addFlash('succes', sprintf('Le groupement « %s » a été créé.', $groupement->nom));
+
+            return $this->redirectToRoute('groupement_index');
+        }
+
+        return $this->render('groupement/new.html.twig', [
+            'form' => $form,
         ]);
     }
 }
