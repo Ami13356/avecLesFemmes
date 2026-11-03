@@ -54,4 +54,13 @@ class GroupementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+    
+    /**
+     * Enregistre un nouveau groupement en base.
+     */
+    public function enregistrer(Groupement $groupement): void
+    {
+        $this->getEntityManager()->persist($groupement);
+        $this->getEntityManager()->flush();
+    }
 }

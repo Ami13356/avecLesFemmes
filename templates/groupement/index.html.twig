@@ -5,6 +5,7 @@
 {% block body %}
     <h1>Groupements</h1>
     <p class="fil-ariane">{{ pagination.total }} groupement(s) trouvé(s)</p>
+    <p><a class="bouton" href="{{ path('groupement_new') }}">+ Ajouter un groupement</a></p>
 
     {{ form_start(form) }}
         <div class="filtre">
