@@ -61,3 +61,13 @@ td.montant, th.montant { text-align: right; white-space: nowrap; }
 .total strong { font-size: 1.25rem; color: var(--violet); }
 
 .vide { color: var(--gris); font-style: italic; }
+
+.filtre { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.filtre div { display: flex; flex-direction: column; }
+.filtre label { font-size: .8rem; color: var(--gris); margin-bottom: .2rem; }
+.filtre input[type="text"] { padding: .4rem .6rem; border: 1px solid var(--bordure); border-radius: 6px; }
+.filtre button { padding: .45rem 1rem; border: 0; border-radius: 6px; background: var(--violet); color: #fff; cursor: pointer; }
+
+.pagination { display: flex; gap: .5rem; align-items: center; margin-top: 1.25rem; }
+.pagination a, .pagination strong { padding: .25rem .7rem; border-radius: 6px; border: 1px solid var(--bordure); text-decoration: none; background: #fff; color: var(--violet); }
+.pagination strong { background: var(--violet); color: #fff; border-color: var(--violet); }
